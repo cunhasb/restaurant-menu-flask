@@ -35,7 +35,9 @@ def editRestaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/delete')
 def deleteRestaurant(restaurant_id):
-    return 'this page will be for deleting restaurant %s' % restaurant_id
+    # this page will be for deleting restaurant
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    return render_template('deleteRestaurant.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>')
