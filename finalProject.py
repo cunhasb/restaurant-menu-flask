@@ -1,11 +1,21 @@
-from flask import Flask
+from flask import Flask, render_template
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Restaurant, MenuItem
 app = Flask(__name__)
+engine = create_engine(
+    'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 @app.route('/')
 @app.route('/restaurants')
 def showRestaurants():
-    return 'this page will show all my restaurants'
+    restaurants = session.query(Restaurant).all()
+    # this page will show all my restaurants
+    return render_template('restaurants.html', restaurants=restaurants)
 
 
 @app.route('/restaurant/new')
