@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {%block container%}
+<div class="row">
 {% for restaurant in restaurants%}
 <div class="col-md-4">
   <div class="card mb-4 box-shadow">
@@ -7,13 +8,28 @@
       <p class="card-text">{{restaurant.name}}</p>
       <div class="d-flex justify-content-between align-items-center">
         <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-          <button type="button" class='btn btn=sm btn-outline-secondary'>Delete</button>
+          <button id = '/restaurant/{{restaurant.id}}' type="button" class="btn btn-sm btn-outline-secondary">View</button>
+          <button id = '/restaurant/{{restaurant.id}}/edit' type="button" class="btn btn-sm btn-outline-secondary edit ">Edit</button>
+          <button id = '/restaurant/{{restaurant.id}}/delete' type="button" class='btn btn=sm btn-outline-secondary'>Delete</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endfor %}
+  </div>
+  <script>
+  (() => {
+  "use strict";
+  window.addEventListener("load", () => {
+    const buttons = document.getElementsByClassName("btn");
+    Array.prototype.filter.call(buttons, button => {
+      button.addEventListener("click", event => {
+        event.stopPropagation;
+        location.href = event.target.id;
+      });
+    });
+  });
+})();
+</script>
 {% endblock %}

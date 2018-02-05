@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
+import pdb
 app = Flask(__name__)
 engine = create_engine(
     'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
@@ -20,12 +21,16 @@ def showRestaurants():
 
 @app.route('/restaurant/new')
 def newRestaurant():
-    return 'this page will be for making a new restaurant'
+    # this page will be for making a new restaurant
+    return render_template('newRestaurant.html')
 
 
 @app.route('/restaurant/<int:restaurant_id>/edit')
 def editRestaurant(restaurant_id):
-    return 'this page will be for editing restaurant %s' % restaurant_id
+    # pdb.set_trace()
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    # this page will be for editing restaurant
+    return render_template('editRestaurant.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete')

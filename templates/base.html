@@ -14,7 +14,7 @@
 
 
     <!-- Custom styles for this template -->
-    <link href="album.css" rel="stylesheet">
+    <link href="/static/index.css" rel="stylesheet">
   </head>
 
   <body>
@@ -40,7 +40,7 @@
       </div>
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container d-flex justify-content-between">
-          <a href="#" class="navbar-brand d-flex align-items-center">
+          <a href="/restaurants" class="navbar-brand d-flex align-items-center">
             <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> -->
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRMznIY_0EKK8ZKVjIO0gTV3-13Ap7qrlDQlwgwIVRUNmoccXQ0g" witdh='20' height='20'/>
             <strong>Cardapios</strong>
@@ -59,18 +59,15 @@
           <h1 class="jumbotron-heading"><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRMznIY_0EKK8ZKVjIO0gTV3-13Ap7qrlDQlwgwIVRUNmoccXQ0g'/></h1>
           <p class="lead text-muted"></p>
           <p>
-            <a href="#" class="btn btn-primary my-2">Main call to action</a>
-            <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+            <a href="/restaurant/new" class="btn btn-primary my-2">Add Restaurant</a>
+            <a href="/restaurants" class="btn btn-secondary my-2">Go Home</a>
           </p>
         </div>
       </section>
 
       <div class="album py-5 bg-light">
         <div class="container">
-
-          <div class="row">
             {% block container %}{% endblock %}
-          </div>
         </div>
       </div>
 

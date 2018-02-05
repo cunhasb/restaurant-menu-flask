@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Create a new Restaurant</title>
-  </head>
-  <body>
-
-  </body>
-</html>
+{%extends 'base.html'%}
+{%block container%}
+<form class="needs-validation" novalidate>
+  <div class="form-row">
+    <div class="col-md-4 mb-3">
+      <label for="validationCustom01">Retaurant Name</label>
+      <input type="text" class="form-control" id="validationCustom01" placeholder="Restaurant Name" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Name!
+      </div>
+    </div>
+  </div>
+   <button class="btn btn-primary" type="submit">Create Restaurant</button>
+</form>
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  "use strict";
+  window.addEventListener(
+    "load",
+    function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.getElementsByClassName("needs-validation");
+      // Loop over them and prevent submission
+      Array.prototype.filter.call(forms, form => {
+        form.addEventListener(
+          "submit",
+          event => {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      });
+    },
+    false
+  );
+})();
+</script>
+{% endblock %}
