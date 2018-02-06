@@ -70,9 +70,12 @@ def editMenuItem(restaurant_id):
     return 'this page will be for editing menu items for restaurant %s' % restaurant_id
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/delete')
-def deleteMenuItem(restaurant_id):
-    return 'this page will be for deleting menu items for restaurant %s' % restaurant_id
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete')
+def deleteMenuItem(restaurant_id, menu_id):
+    # this page will be for deleting Menu Items
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
+    return render_template('deleteMenuItem.html', restaurant=restaurant, menuItem=menuItem)
 
 
 if __name__ == '__main__':
