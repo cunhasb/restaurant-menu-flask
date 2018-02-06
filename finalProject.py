@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
@@ -19,13 +19,22 @@ def showRestaurants():
     return render_template('restaurants.html', restaurants=restaurants)
 
 
-@app.route('/restaurant/new')
+@app.route('/restaurant/new', methods=['GET', 'POST'])
 def newRestaurant():
     # this page will be for making a new restaurant
-    return render_template('newRestaurant.html')
+    if request.method == 'POST':
+        # pdb.set_trace()
+        newItem = Restaurant(
+            name=request.form['name'])
+        session.add(newItem)
+        session.commit()
+        flash('New Restaurant sucessfully created!')
+        return redirect(url_for('newRestaurant'))
+    else:
+        return render_template('newRestaurant.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit')
+@app.route('/restaurant/<int:restaurant_id>/edit/')
 def editRestaurant(restaurant_id):
     # pdb.set_trace()
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -33,15 +42,15 @@ def editRestaurant(restaurant_id):
     return render_template('editRestaurant.html', restaurant=restaurant)
 
 
-@app.route('/restaurant/<int:restaurant_id>/delete')
+@app.route('/restaurant/<int:restaurant_id>/delete/')
 def deleteRestaurant(restaurant_id):
     # this page will be for deleting restaurant
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     return render_template('deleteRestaurant.html', restaurant=restaurant)
 
 
-@app.route('/restaurant/<int:restaurant_id>')
-@app.route('/restaurant/<int:restaurant_id>/menu')
+@app.route('/restaurant/<int:restaurant_id>/')
+@app.route('/restaurant/<int:restaurant_id>/menu/')
 def showMenu(restaurant_id):
     # this page will be for showing restaurant %s menu
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -58,14 +67,14 @@ def showMenu(restaurant_id):
     return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/new')
+@app.route('/restaurant/<int:restaurant_id>/menu/new/')
 def addMenuItem(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     # this page will be for adding new menu items for menu
     return render_template('newMenuItem.html', restaurant=restaurant)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit')
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit/')
 def editMenuItem(restaurant_id, menuItem_id):
     # this page will be for editing menu items for restaurant
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -73,7 +82,7 @@ def editMenuItem(restaurant_id, menuItem_id):
     return render_template('editMenuItem.html', restaurant=restaurant, item=menuItem)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/delete')
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/delete/')
 def deleteMenuItem(restaurant_id, menuItem_id):
     # this page will be for deleting Menu Items
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -82,5 +91,6 @@ def deleteMenuItem(restaurant_id, menuItem_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run("", port=3000)
