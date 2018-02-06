@@ -23,7 +23,6 @@ def showRestaurants():
 def newRestaurant():
     # this page will be for making a new restaurant
     if request.method == 'POST':
-        # pdb.set_trace()
         newItem = Restaurant(
             name=request.form['name'])
         session.add(newItem)
@@ -34,12 +33,24 @@ def newRestaurant():
         return render_template('newRestaurant.html')
 
 
-@app.route('/restaurant/<int:restaurant_id>/edit/')
+@app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
     # pdb.set_trace()
-    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # this page will be for editing restaurant
-    return render_template('editRestaurant.html', restaurant=restaurant)
+    if request.method == 'POST':
+        # pdb.set_trace()
+        restaurant = session.query(
+            Restaurant).filter_by(id=restaurant_id).one()
+        restaurant.name = request.form['name']
+        session.add(restaurant)
+        session.commit()
+        flash('Restaurant was sucessfully updated!')
+        return redirect(url_for('editRestaurant', restaurant_id=restaurant.id))
+    else:
+        # pdb.set_trace()
+        restaurant = session.query(
+            Restaurant).filter_by(id=restaurant_id).one()
+        # this page will be for editing restaurant
+        return render_template('editRestaurant.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete/')

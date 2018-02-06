@@ -1,10 +1,19 @@
 {%extends 'base.html'%}
 {%block container%}
-<form class="needs-validation" novalidate>
+{%with messages = get_flashed_messages()%}
+{%if messages%}
+<ul>
+  {%for message in messages %}
+    <li><strong>{{message}}</strong></li>
+    {%endfor%}
+  </ul>
+{%endif%}
+{%endwith%}
+<form class="needs-validation" novalidate action='{{url_for('editRestaurant',restaurant_id=restaurant.id)}}' method='POST'>
   <div class="form-row">
     <div class="col-md-6">
-      <label for="validationCustom01">Retaurant Name</label>
-      <input type="text" class="form-control" id="validationCustom01" placeholder= 'Restaurant Name' value = '{{restaurant.name}}' required>
+      <label for="editRestaurant">Retaurant Name</label>
+      <input name='name' type="text" class="form-control" id="editRestaurant" placeholder= 'Restaurant Name' value = '{{restaurant.name}}' required>
       <div class="valid-feedback">
         Looks good!
       </div>
