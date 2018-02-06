@@ -1,0 +1,46 @@
+{%extends 'base.html'%}
+{%block container%}
+
+<section class="jumbotron text-center">
+  <div class="container">
+    <h2>{{restaurant.name}}</h2>
+    <h4 class="heading">Menu Items</h4>
+      <a href="/restaurant/{{restaurant.id}}/menu/new" class="btn btn-primary my-2">Add Menu Item</a>
+  </div>
+</section>
+  {%for course in courses%}
+    <h3>{{course}}</h3>
+    <div class="row">
+      {% for item in menuItems if item.course == course%}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <div class="card-body">
+              <p class="card-text">{{item.name}}</p>
+              <p class='card-text'>{{item.price}}
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button id = '/restaurant/{{item.restaurant_id}}/menu/{{item.id}}/edit' type="button" class="btn btn-sm btn-outline-secondary edit ">Edit</button>
+                  <button data-toggle='modal' href='/templates/deleteRestaurant.html/#exampleModalCenter' id = '/restaurant/{{item.restaurant_id}}/menu/{{item.id}}/delete' type="button" class='btn btn=sm btn-outline-secondary'>Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%endfor%}
+    </div>
+  {%endfor%}
+  <script>
+  (() => {
+  "use strict";
+  window.addEventListener("load", () => {
+    const buttons = document.getElementsByClassName("btn");
+    Array.prototype.filter.call(buttons, button => {
+      button.addEventListener("click", event => {
+        event.stopPropagation;
+        location.href = event.target.id;
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}

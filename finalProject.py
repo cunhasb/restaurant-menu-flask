@@ -43,12 +43,26 @@ def deleteRestaurant(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>')
 @app.route('/restaurant/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
-    return 'this page will be for showing restaurant %s menu' % restaurant_id
+    # this page will be for showing restaurant %s menu
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    menuItems = session.query(MenuItem).filter_by(
+        restaurant_id=restaurant_id).group_by('course', 'id').all()
+    courses = []
+    for el in menuItems:
+        if el.course not in courses:
+            courses.append(el.course)
+    for el in courses:
+        print(el)
+    print (len(courses))
+    # pdb.set_trace()
+    return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new')
 def addMenuItem(restaurant_id):
-    return 'this page will be for adding new menu items for menu %s' % restaurant_id
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    # this page will be for adding new menu items for menu
+    return render_template('newMenuItem.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/edit')

@@ -1,0 +1,84 @@
+{%extends 'base.html'%}
+{%block container%}
+  <div class="container text-center">
+    <h2>{{restaurant.name}}</h2>
+    <h4 class="heading">Menu Items</h4>
+      <p>
+        <a href="/restaurant/{{restaurant.id}}/menu/new" class="btn btn-primary my-2">Add Menu Item</a>
+        <a href="/restaurant/{{restaurant.id}}/menu" class="btn btn-secondary my-2">Go Back</a>
+      </p>
+  </div>
+<form class="needs-validation" novalidate>
+  <div class="form-row">
+    <div class="col-md-3 mb-3">
+      <label for="item-name">Item Name</label>
+      <input type="text" class="form-control" id="item-name" placeholder="Item Name" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Name!
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="item-description">Item Description</label>
+      <input type="text" class="form-control" id="item-description" placeholder="Item Description" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the description!
+      </div>
+    </div>
+    <div class="col-md-2 mb-3">
+      <label for="item-price">Price</label>
+      <input type="text" class="form-control" id="item-price" placeholder="Price" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Price!
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="item-course">Course</label>
+      <input type="text" class="form-control" id="item-course" placeholder="Course" required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Course!
+      </div>
+    </div>
+  </div>
+   <button class="btn btn-primary" type="submit">Create Item</button>
+</form>
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  "use strict";
+  window.addEventListener(
+    "load",
+    function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.getElementsByClassName("needs-validation");
+      // Loop over them and prevent submission
+      Array.prototype.filter.call(forms, form => {
+        form.addEventListener(
+          "submit",
+          event => {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+          },
+          false
+        );
+      });
+    },
+    false
+  );
+})();
+</script>
+{% endblock %}
