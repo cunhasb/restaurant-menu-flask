@@ -11,7 +11,7 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-courses = ['Appetizer', 'Soup', 'Fish', 'Salada', 'Main course', 'Dessert']
+courses = ['Appetizer', 'Soup', 'Fish', 'Salad', 'Main course', 'Dessert']
 g = Generic('en')
 
 # Create Restaurants
@@ -44,3 +44,8 @@ for restaurant in restaurants:
 items = session.query(MenuItem)
 for item in items:
     print(item.name, item.restaurant.id)
+
+# close session and close connection
+
+session.close()
+engine.dispose()

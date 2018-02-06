@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {%block container%}
+
 <h1>{{restaurant.name}}</h1>
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteRestaurant">
   Delete
@@ -19,7 +20,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-secondary">Yes</button>
+        <form action='{{url_for('deleteRestaurant',restaurant_id = restaurant.id)}}' method='POST' >
+          <button type="submit" class="btn btn-secondary">Yes</button>
+      </form>
       </div>
     </div>
   </div>

@@ -27,7 +27,8 @@ def newRestaurant():
             name=request.form['name'])
         session.add(newItem)
         session.commit()
-        flash('New Restaurant sucessfully created!')
+        flash('The %s Restaurant was sucessfully created!' %
+              request.form['name'])
         return redirect(url_for('newRestaurant'))
     else:
         return render_template('newRestaurant.html')
@@ -43,7 +44,7 @@ def editRestaurant(restaurant_id):
         restaurant.name = request.form['name']
         session.add(restaurant)
         session.commit()
-        flash('Restaurant was sucessfully updated!')
+        flash('The %s Restaurant was sucessfully updated!' % restaurant.name)
         return redirect(url_for('editRestaurant', restaurant_id=restaurant.id))
     else:
         # pdb.set_trace()
@@ -53,9 +54,19 @@ def editRestaurant(restaurant_id):
         return render_template('editRestaurant.html', restaurant=restaurant)
 
 
-@app.route('/restaurant/<int:restaurant_id>/delete/')
+@app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
     # this page will be for deleting restaurant
+    if request.method == 'POST':
+        restaurant = session.query(
+            Restaurant).filter_by(id=restaurant_id).one()
+        menuItems = session.query(MenuItem).filter_by(
+            restaurant_id=restaurant_id).all()
+
+        session.delete(restaurant)
+        session.commit()
+        flash('The %s Restaurant was successfully deleted!' % restaurant.name)
+        return redirect(url_for('showRestaurants'))
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     return render_template('deleteRestaurant.html', restaurant=restaurant)
 
