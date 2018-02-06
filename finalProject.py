@@ -65,16 +65,19 @@ def addMenuItem(restaurant_id):
     return render_template('newMenuItem.html', restaurant=restaurant)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/edit')
-def editMenuItem(restaurant_id):
-    return 'this page will be for editing menu items for restaurant %s' % restaurant_id
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit')
+def editMenuItem(restaurant_id, menuItem_id):
+    # this page will be for editing menu items for restaurant
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    menuItem = session.query(MenuItem).filter_by(id=menuItem_id).one()
+    return render_template('editMenuItem.html', restaurant=restaurant, item=menuItem)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/<int:menu_id>/delete')
-def deleteMenuItem(restaurant_id, menu_id):
+@app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/delete')
+def deleteMenuItem(restaurant_id, menuItem_id):
     # this page will be for deleting Menu Items
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
+    menuItem = session.query(MenuItem).filter_by(id=menuItem_id).one()
     return render_template('deleteMenuItem.html', restaurant=restaurant, menuItem=menuItem)
 
 

@@ -1,34 +1,72 @@
 {%extends 'base.html'%}
 {%block container%}
+  <div class="container text-center">
+    <h2>{{restaurant.name}}</h2>
+    <h4 class="heading">Menu Items</h4>
+      <p>
+        <a href="/restaurant/{{restaurant.id}}/menu/new" class="btn btn-primary my-2">Add Menu Item</a>
+      </p>
+  </div>
 <form class="needs-validation" novalidate>
   <div class="form-row">
-    <div class="col-md-6">
-      <label for="validationCustom01">Retaurant Name</label>
-      <input type="text" class="form-control" id="validationCustom01" placeholder= 'Restaurant Name' value = '{{restaurant.name}}' required>
+    <div class="col-md-4 mb-3">
+      <label for="item-name">Item Name</label>
+      <input type="text" class="form-control" id="item-name" placeholder="Item Name" value='{{item.name}}' required>
       <div class="valid-feedback">
         Looks good!
       </div>
       <div class="invalid-feedback">
-        Sorry you forgot to add the Name!
+        Sorry, you forgot to add the Name!
+      </div>
+    </div>
+    <div class="col-md-2 mb-3">
+      <label for="item-price">Price</label>
+      <input type="text" class="form-control" id="item-price" placeholder="Price" value='{{item.price}}' required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Price!
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="item-course">Course</label>
+      <input type="text" class="form-control" id="item-course" placeholder="Course" value='{{item.course}}' required>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the Course!
+      </div>
+    </div>
+    <div class="col-md-12 mb-3">
+      <label for="item-description">Item Description</label>
+      <textarea class="form-control" id="item-description" placeholder="Item Description"  rows='3' required>{{item.description}}</textarea>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+      <div class="invalid-feedback">
+        Sorry, you forgot to add the description!
       </div>
     </div>
   </div>
-   <button class="btn btn-primary" type="submit">Submit form</button>
+   <button class="btn btn-primary" type="submit">Save Changes</button>
+   <a href="/restaurant/{{restaurant.id}}/menu" class="btn btn-secondary my-2">Cancel</a>
 </form>
 <script>
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-(function() {
+(() => {
   "use strict";
   window.addEventListener(
     "load",
     function() {
       // Fetch all the forms we want to apply custom Bootstrap validation styles to
-      var forms = document.getElementsByClassName("needs-validation");
+      const forms = document.getElementsByClassName("needs-validation");
       // Loop over them and prevent submission
-      var validation = Array.prototype.filter.call(forms, function(form) {
+      Array.prototype.filter.call(forms, form => {
         form.addEventListener(
           "submit",
-          function(event) {
+          event => {
             if (form.checkValidity() === false) {
               event.preventDefault();
               event.stopPropagation();
