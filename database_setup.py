@@ -44,7 +44,7 @@ class MenuItem(Base):
     restaurant_id = Column(Integer, ForeignKey(
         'restaurant.id', ondelete='CASCADE'))
     restaurant = relationship(
-        Restaurant, cascade='all,delete-orphan', single_parent=True)
+        Restaurant, single_parent=True)
 
 
 # engine = create_engine(connect('restaurant', 'restaurantPassword', 'restaurant'))
