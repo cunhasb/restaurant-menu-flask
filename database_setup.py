@@ -59,7 +59,7 @@ class MenuItem(Base):
         # Returns object data in easily serializeable format
         return {
             'id': self.id,
-            'restaurant_id': self.restaurant_id
+            'restaurant_id': self.restaurant_id,
             'name': self.name,
             'description': self.description,
             'price': self.price,
