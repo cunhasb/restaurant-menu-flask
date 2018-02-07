@@ -15,7 +15,7 @@ GRANT'''
 engine = create_engine(
     'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
 db_session = scoped_session(sessionmaker(
-    autocommit=False, autoFlush=False, bind=engine))
+    autocommit=False, bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
 
@@ -25,7 +25,7 @@ def init_db():
     they will be registered properly on the metadata. Otherwise
     you will have to import them first before calling init_db()
     '''
-    import models
+    import db.models
     Base.metadata.create_all(bind=engine)
 
 

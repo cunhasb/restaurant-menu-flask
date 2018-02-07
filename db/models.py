@@ -1,4 +1,4 @@
-from database import Base
+from db.database import Base
 from flask_security import UserMixin, RoleMixin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import relationship, backref
@@ -11,7 +11,7 @@ import pdb
 class RolesUsers(Base):
     __tablename__ = 'roles_users'
     id = Column(Integer(), primary_key=True)
-    user_id = Column('user_id', Integer(), ForeignKey('user_id'))
+    user_id = Column('user_id', Integer(), ForeignKey('user.id'))
     role_id = Column('role_id', Integer(), ForeignKey('role.id'))
 
 
@@ -23,7 +23,7 @@ class Role(Base, RoleMixin):
 
 
 class User(Base, UserMixin):
-    __tablename = 'user'
+    __tablename__ = 'user'
     id = Column(Integer(), primary_key=True)
     email = Column(String(255), unique=True)
     username = Column(String(255))
