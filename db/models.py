@@ -1,29 +1,41 @@
-import os
-import sys
-from sqlalchemy import Column, ForeignKey, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship
+from database import Base
+from flask_security import UserMixin, RoleMixin
 from sqlalchemy import create_engine
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Boolean, DateTime, Column, ForeignKey, String, Integer
 import pdb
 
-'''psql
-postgres=# CREATE DATABASE restaurant;
-CREATE DATABASE
-postgres=# CREATE USER restaurant WITH PASSWORD 'restaurantPassword';
-CREATE ROLE
-postgres=# GRANT ALL PRIVILEGES ON DATABASE restaurant TO RESTAURANT;
-GRANT'''
+# Models
 
 
-Base = declarative_base()
+class RolesUsers(Base):
+    __tablename__ = 'roles_users'
+    id = Column(Integer(), primary_key=True)
+    user_id = Column('user_id', Integer(), ForeignKey('user_id'))
+    role_id = Column('role_id', Integer(), ForeignKey('role.id'))
 
 
-def connect(user, password, db, host='localhost', port=5432):
-    '''Returns a connection and a metadata object'''
-    # We connect with the help of the PostgreSQL URL
-    # postgresql://RESTAURANT:restaurantPassword@localhost:5432/restaurant
-    url = 'postgresql://{}:{}@{}:{}/{}'
-    url = url.format(user, password, host, port, db)
+class Role(Base, RoleMixin):
+    __tablename__ = 'role'
+    id = Column(Integer(), primary_key=True)
+    name = Column(String(80), unique=True)
+    description = Column(String(255))
+
+
+class User(Base, UserMixin):
+    __tablename = 'user'
+    id = Column(Integer(), primary_key=True)
+    email = Column(String(255), unique=True)
+    username = Column(String(255))
+    password = Column(String(255))
+    last_login_at = Column(DateTime())
+    current_login_at = Column(DateTime())
+    last_login_ip = Column(String(100))
+    login_count = Column(Integer())
+    active = Column(Boolean())
+    confirmed_at = Column(DateTime())
+    roles = relationship('Role', secondary='roles_users',
+                         backref=backref('users', lazy='dynamic'))
 
 
 class Restaurant(Base):
@@ -65,9 +77,3 @@ class MenuItem(Base):
             'price': self.price,
             'course': self.course
         }
-
-
-# engine = create_engine(connect('restaurant', 'restaurantPassword', 'restaurant'))
-engine = create_engine(
-    'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
-Base.metadata.create_all(engine)
