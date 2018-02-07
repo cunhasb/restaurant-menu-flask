@@ -89,11 +89,27 @@ def showMenu(restaurant_id):
     return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses)
 
 
-@app.route('/restaurant/<int:restaurant_id>/menu/new/')
+@app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
 def addMenuItem(restaurant_id):
-    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     # this page will be for adding new menu items for menu
-    return render_template('newMenuItem.html', restaurant=restaurant)
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        course = request.form['course']
+        newItem = MenuItem(
+            name=name, description=description, price=price, course=course, restaurant_id=restaurant_id)
+        # pdb.set_trace()
+        session.add(newItem)
+        session.commit()
+        flash('%s was sucessfully added to the menu!' %
+              name)
+        return redirect(url_for('addMenuItem', restaurant_id=restaurant_id))
+    else:
+
+        restaurant = session.query(
+            Restaurant).filter_by(id=restaurant_id).one()
+        return render_template('newMenuItem.html', restaurant=restaurant)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit/')
