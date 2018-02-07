@@ -32,6 +32,14 @@ class Restaurant(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
 
+    @property
+    def serialize(self):
+        # Returns object data in easily serializeable format
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
 
 class MenuItem(Base):
     __tablename__ = 'menu_item'
@@ -45,6 +53,18 @@ class MenuItem(Base):
         'restaurant.id', ondelete='CASCADE'))
     restaurant = relationship(
         Restaurant, single_parent=True)
+
+    @property
+    def serialize(self):
+        # Returns object data in easily serializeable format
+        return {
+            'id': self.id,
+            'restaurant_id': self.restaurant_id
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'course': self.course
+        }
 
 
 # engine = create_engine(connect('restaurant', 'restaurantPassword', 'restaurant'))
