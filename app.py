@@ -1,15 +1,38 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask_security import Security, login_required, SQLAlchemySessionUserDatastore
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database import db_session, init_db
+from models import Base, Restaurant, MenuItem User, Role
 import pdb
+
+# Create app
 app = Flask(__name__)
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'super_secret_key'
+
+# Setup Flask-Security
+user_datastore = SQLAlchemySessionUserDatastore(db_session, User, Role)
+security = Security(app, user_datastore)
+
+# Create a user to test with
+
+
+@app.before_first_request
+def create_user():
+    init_db()
+    user_datastore.create_user(
+        email='fabianocunhadev@gmail.com', password='password')
+    db_session.commit()
+
+
 engine = create_engine(
     'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Views
 # API's Endpoints (GET request only)
 
 
@@ -20,6 +43,7 @@ def restaurantsJSON():
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON/')
+@login_required
 def restaurantMenuJSON(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id)
     menuItems = session.query(MenuItem).filter_by(
@@ -28,6 +52,7 @@ def restaurantMenuJSON(restaurant_id):
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/JSON/')
+@login_required
 def restaurantMenuItemJSON(restaurant_id, menuItem_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id)
     menuItem = session.query(MenuItem).filter_by(id=menuItem_id)
@@ -43,6 +68,7 @@ def showRestaurants():
 
 
 @app.route('/restaurant/new', methods=['GET', 'POST'])
+@login_required
 def newRestaurant():
     # this page will be for making a new restaurant
     if request.method == 'POST':
@@ -58,6 +84,7 @@ def newRestaurant():
 
 
 @app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editRestaurant(restaurant_id):
     # pdb.set_trace()
     if request.method == 'POST':
@@ -78,6 +105,7 @@ def editRestaurant(restaurant_id):
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteRestaurant(restaurant_id):
     # this page will be for deleting restaurant
     if request.method == 'POST':
@@ -96,6 +124,7 @@ def deleteRestaurant(restaurant_id):
 
 @app.route('/restaurant/<int:restaurant_id>/')
 @app.route('/restaurant/<int:restaurant_id>/menu/')
+@login_required
 def showMenu(restaurant_id):
     # this page will be for showing restaurant %s menu
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
@@ -113,6 +142,7 @@ def showMenu(restaurant_id):
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
+@login_required
 def addMenuItem(restaurant_id):
     # this page will be for adding new menu items for menu
     if request.method == 'POST':
@@ -135,6 +165,7 @@ def addMenuItem(restaurant_id):
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editMenuItem(restaurant_id, menuItem_id):
     # this page will be for editing menu items for restaurant
     if request.method == "POST":
@@ -156,6 +187,7 @@ def editMenuItem(restaurant_id, menuItem_id):
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteMenuItem(restaurant_id, menuItem_id):
     # this page will be for deleting Menu Items
     if request.method == 'POST':
@@ -172,6 +204,4 @@ def deleteMenuItem(restaurant_id, menuItem_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = True
     app.run("", port=3000)
