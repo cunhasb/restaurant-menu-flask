@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_security import Security, login_required, SQLAlchemySessionUserDatastore
+from flask_mail import Mail
+from celery import Celery
+from werkzeug.contrib.fixers import ProxyFix
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db.database import db_session, init_db
@@ -12,15 +15,22 @@ app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super_secret_key'
 app.config['SECURITY_PASSWORD_SALT'] = 'super_secret_password_salt'
 app.config['SECURITY_REGISTERABLE'] = True
+app.config['SECURITY_TRACKABLE'] = True
+app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com.'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USE_SSL'] = True
+# app.config['MAIL_USERNAME'] = 'your@mail.com'
+# app.config['MAIL_PASSWORD'] = 'password'
 
 
 # Setup Flask-Security
 user_datastore = SQLAlchemySessionUserDatastore(db_session, User, Role)
 security = Security(app, user_datastore)
+# mail = Mail(app)
 
 
 # Create a user to test with
-
 
 @app.before_first_request
 def create_user():
@@ -32,6 +42,28 @@ def create_user():
 
 # Views
 # API's Endpoints (GET request only)
+
+# Setup the task
+# @celery.task
+# def send_security_email(**kwargs):
+#     # Use the Flask-Mail extension instance to send the incoming ``msg`` parameter
+#     # which is an instance of `flask_mail.Message`
+#     mail.send(Message(**kwargs))
+#
+#
+# @security.send_mail_task
+# def delay_security_email(msg):
+#     pdb.set_trace()
+#     mail.send(recipients=msg.recipients, subject=msg.subject, body=msg.body)
+# @celery.task
+# def send_security_email(**kwargs):
+#     mail.send(Message(**kwargs))
+
+
+# @security.send_mail_task
+# def delay_security_email(msg):
+#     mail.send(subject=msg.subject, sender=msg.sender,
+#                               recipients=msg.recipients, body=msg.body)
 
 
 @app.route('/restaurants/JSON/')

@@ -31,6 +31,7 @@ class User(Base, UserMixin):
     last_login_at = Column(DateTime())
     current_login_at = Column(DateTime())
     last_login_ip = Column(String(100))
+    current_login_ip = Column(String(100))
     login_count = Column(Integer())
     active = Column(Boolean())
     confirmed_at = Column(DateTime())
