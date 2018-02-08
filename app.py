@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_security import Security, login_required, SQLAlchemySessionUserDatastore
+from flask_security import Security, login_required, SQLAlchemySessionUserDatastore, current_user
 from flask_mail import Mail
 from celery import Celery
 from werkzeug.contrib.fixers import ProxyFix
@@ -27,6 +27,8 @@ app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
 # Setup Flask-Security
 user_datastore = SQLAlchemySessionUserDatastore(db_session, User, Role)
 security = Security(app, user_datastore)
+current_user
+# pdb.set_trace()
 # mail = Mail(app)
 
 
@@ -65,9 +67,13 @@ def create_user():
 #     mail.send(subject=msg.subject, sender=msg.sender,
 #                               recipients=msg.recipients, body=msg.body)
 
+# @security.context_processor
+# def security_context_processor(*arg):
+
 
 @app.route('/restaurants/JSON/')
 def restaurantsJSON():
+    # pdb.set_trace()
     restaurants = db_session.query(Restaurant).all()
     return jsonify(Restaurants=[i.serialize for i in restaurants])
 
@@ -75,6 +81,7 @@ def restaurantsJSON():
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON/')
 @login_required
 def restaurantMenuJSON(restaurant_id):
+    pdb.set_trace()
     restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id)
     menuItems = db_session.query(MenuItem).filter_by(
         restaurant_id=restaurant_id).all()
@@ -84,6 +91,7 @@ def restaurantMenuJSON(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/JSON/')
 @login_required
 def restaurantMenuItemJSON(restaurant_id, menuItem_id):
+    pdb.set_trace()
     restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id)
     menuItem = db_session.query(MenuItem).filter_by(id=menuItem_id)
     return jsonify(Restaurant=[i.serialize for i in restaurant], MenuItem=[i.serialize for i in menuItem])
@@ -94,7 +102,8 @@ def restaurantMenuItemJSON(restaurant_id, menuItem_id):
 def showRestaurants():
     restaurants = db_session.query(Restaurant).all()
     # this page will show all my restaurants
-    return render_template('restaurants.html', restaurants=restaurants)
+    # pdb.set_trace()
+    return render_template('restaurants.html', current_user=current_user, restaurants=restaurants)
 
 
 @app.route('/restaurant/new', methods=['GET', 'POST'])
@@ -110,7 +119,7 @@ def newRestaurant():
               request.form['name'])
         return redirect(url_for('newRestaurant'))
     else:
-        return render_template('newRestaurant.html')
+        return render_template('newRestaurant.html', current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
@@ -131,7 +140,7 @@ def editRestaurant(restaurant_id):
         restaurant = db_session.query(
             Restaurant).filter_by(id=restaurant_id).one()
         # this page will be for editing restaurant
-        return render_template('editRestaurant.html', restaurant=restaurant)
+        return render_template('editRestaurant.html', restaurant=restaurant, current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/delete/', methods=['GET', 'POST'])
@@ -149,7 +158,7 @@ def deleteRestaurant(restaurant_id):
         flash('The %s Restaurant was successfully deleted!' % restaurant.name)
         return redirect(url_for('showRestaurants'))
     restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id).one()
-    return render_template('deleteRestaurant.html', restaurant=restaurant)
+    return render_template('deleteRestaurant.html', restaurant=restaurant, current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/')
@@ -168,7 +177,7 @@ def showMenu(restaurant_id):
         print(el)
     print (len(courses))
     # pdb.set_trace()
-    return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses)
+    return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses, current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/new/', methods=['GET', 'POST'])
@@ -191,7 +200,7 @@ def addMenuItem(restaurant_id):
 
         restaurant = db_session.query(
             Restaurant).filter_by(id=restaurant_id).one()
-        return render_template('newMenuItem.html', restaurant=restaurant)
+        return render_template('newMenuItem.html', restaurant=restaurant, current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/edit/', methods=['GET', 'POST'])
@@ -213,7 +222,7 @@ def editMenuItem(restaurant_id, menuItem_id):
         restaurant = db_session.query(
             Restaurant).filter_by(id=restaurant_id).one()
         menuItem = db_session.query(MenuItem).filter_by(id=menuItem_id).one()
-        return render_template('editMenuItem.html', restaurant=restaurant, item=menuItem)
+        return render_template('editMenuItem.html', restaurant=restaurant, item=menuItem, current_user=current_user)
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/<int:menuItem_id>/delete/', methods=['GET', 'POST'])
@@ -230,7 +239,7 @@ def deleteMenuItem(restaurant_id, menuItem_id):
         restaurant = session.query(
             Restaurant).filter_by(id=restaurant_id).one()
         menuItem = session.query(MenuItem).filter_by(id=menuItem_id).one()
-        return render_template('deleteMenuItem.html', restaurant=restaurant, menuItem=menuItem)
+        return render_template('deleteMenuItem.html', restaurant=restaurant, menuItem=menuItem, current_user=current_user)
 
 
 if __name__ == '__main__':
