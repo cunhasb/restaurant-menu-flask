@@ -11,10 +11,13 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super_secret_key'
 app.config['SECURITY_PASSWORD_SALT'] = 'super_secret_password_salt'
+app.config['SECURITY_REGISTERABLE'] = True
+
 
 # Setup Flask-Security
 user_datastore = SQLAlchemySessionUserDatastore(db_session, User, Role)
 security = Security(app, user_datastore)
+
 
 # Create a user to test with
 
@@ -22,16 +25,10 @@ security = Security(app, user_datastore)
 @app.before_first_request
 def create_user():
     init_db()
-    user_datastore.create_user(
-        email='fabianocunhadev@gmail.com', password='password')
-    db_session.commit()
+    # user_datastore.create_user(
+    #     email='fabianocunhadev@gmail.com', password='password')
+    # db_session.commit()
 
-
-# engine = create_engine(
-#     'postgresql://restaurant:restaurantPassword@localhost:5432/restaurant')
-# Base.metadata.bind = engine
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
 
 # Views
 # API's Endpoints (GET request only)
