@@ -73,7 +73,6 @@ def create_user():
 
 @app.route('/restaurants/JSON/')
 def restaurantsJSON():
-    # pdb.set_trace()
     restaurants = db_session.query(Restaurant).all()
     return jsonify(Restaurants=[i.serialize for i in restaurants])
 
@@ -102,7 +101,6 @@ def restaurantMenuItemJSON(restaurant_id, menuItem_id):
 def showRestaurants():
     restaurants = db_session.query(Restaurant).all()
     # this page will show all my restaurants
-    # pdb.set_trace()
     return render_template('restaurants.html', current_user=current_user, restaurants=restaurants)
 
 
@@ -125,9 +123,7 @@ def newRestaurant():
 @app.route('/restaurant/<int:restaurant_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def editRestaurant(restaurant_id):
-    # pdb.set_trace()
     if request.method == 'POST':
-        # pdb.set_trace()
         restaurant = db_session.query(
             Restaurant).filter_by(id=restaurant_id).one()
         restaurant.name = request.form['name']
@@ -136,7 +132,6 @@ def editRestaurant(restaurant_id):
         flash('The %s Restaurant was sucessfully updated!' % restaurant.name)
         return redirect(url_for('editRestaurant', restaurant_id=restaurant.id))
     else:
-        # pdb.set_trace()
         restaurant = db_session.query(
             Restaurant).filter_by(id=restaurant_id).one()
         # this page will be for editing restaurant
@@ -176,7 +171,6 @@ def showMenu(restaurant_id):
     for el in courses:
         print(el)
     print (len(courses))
-    # pdb.set_trace()
     return render_template('menuItems.html', restaurant=restaurant, menuItems=menuItems, courses=courses, current_user=current_user)
 
 
